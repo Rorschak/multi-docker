@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+
+before_install:
+  - docker build -t rorschak/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -it rorschak/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t rorschak/multi-client ./client
+  - docker build -t rorschak/multi-nginx ./nginx
+  - docker build -t rorschak/multi-server ./server
+  - docker build -t rorschak/multi-worker ./worker
+  #LOG in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" -- password-stdin
+  #Take these images and push them to docker hub
+  - docker push rorschak/multi-client
+  - docker push rorschak/multi-nginx
+  - docker push rorschak/multi-server
+  - docker push rorschak/multi-worker
