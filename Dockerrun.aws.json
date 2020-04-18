@@ -14,7 +14,7 @@
       "essential": false
     },
     {
-      "name": "worker"
+      "name": "worker",
       "image": "rorschak/multi-worker",
       "hostname": "worker",
       "essential": false
